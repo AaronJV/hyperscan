@@ -989,10 +989,14 @@ hs_error_t HS_CDECL hs_scan_stream(hs_stream_t *id, const char *data,
     if (unlikely(markScratchInUse(scratch))) {
         return HS_SCRATCH_IN_USE;
     }
-    hs_error_t rv = hs_scan_stream_internal(id, data, length, flags, scratch,
-                                            onEvent, context);
-    unmarkScratchInUse(scratch);
-    return rv;
+    
+    try {
+        hs_error_t rv = hs_scan_stream_internal(id, data, length, flags, scratch,
+                                                onEvent, context);
+        return rv;
+    } finally {
+        unmarkScratchInUse(scratch);
+    }
 }
 
 HS_PUBLIC_API
